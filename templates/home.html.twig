@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% form_theme formDatePicker 'bootstrap_4_layout.html.twig' %}
+{% block body %}
+<style>
+    .example-wrapper { 
+        height:720px;
+        width: 100%; 
+        font: 18px/1.5 sans-serif; 
+        background: url('/images/pexels-oziel-gómez-849835.jpg') no-repeat;
+        background-size:cover;
+        background-position:center;
+        
+    }
+    .example-wrapper code { 
+        padding: 2px 6px; 
+    }
+</style>
+
+<div class="example-wrapper">
+    <h1>Bienvenue à bord</h1>
+    <h2>Location de voiture 24H/24 7j/7</h2>
+    <div>
+        {{ form_start(formDatePicker) }}
+            {{ form_row(formDatePicker.datedebut) }}
+            {{ form_row(formDatePicker.datefin) }}
+            <button type="submit" class="btn btn-success mt-3">Valider</button>
+        {{ form_end(formDatePicker) }}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker();
+        });
+    </script>
+
+
+
+
+</div>
+{% endblock %}
