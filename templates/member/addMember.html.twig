@@ -2,7 +2,11 @@
 {% form_theme formAddEditMember 'bootstrap_4_layout.html.twig' %}
 {% block body%}
     <div class="m-3 p-2">
-            <h1>Ajout d'un membre</h1>
+            {% if etatButton ==1 %}
+                <h1>Modification d'un membre</h1>
+            {% else %}
+                <h1>Ajout d'un membre</h1>
+            {% endif %}
             <hr>
             {{ form_start(formAddEditMember) }}
                 {{ form_row(formAddEditMember.pseudo , {'attr':{'placeholder':"Pseudo du membre"}}) }}

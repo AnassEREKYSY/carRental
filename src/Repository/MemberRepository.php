@@ -21,6 +21,13 @@ class MemberRepository extends ServiceEntityRepository
         parent::__construct($registry, Member::class);
     }
 
+
+    public function remove(Member $entity): void
+    {
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
+    }
+
 //    /**
 //     * @return Member[] Returns an array of Member objects
 //     */
