@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% form_theme formAddEditVehicule 'bootstrap_4_layout.html.twig' %}
+{% block body%}
+    <div class="m-3 p-2">
+            {% if etatButton ==1 %}
+                <h1>Modification d'une vehicule</h1>
+            {% else %}
+                <h1>Ajout d'une vehicule</h1>
+            {% endif %}
+            <hr>
+            {{ form_start(formAddEditVehicule) }}
+                {{ form_row(formAddEditVehicule.titre , {'attr':{'placeholder':"Titre de la vehicule"}}) }}
+                {{ form_row(formAddEditVehicule.marque , {'attr':{'placeholder':"Marque de la vehicule"}}) }}
+                {{ form_row(formAddEditVehicule.modele , {'attr':{'placeholder':"Modele de la vehicule"}}) }}
+                {{ form_row(formAddEditVehicule.description) }}
+                {{ form_row(formAddEditVehicule.photo) }}
+                {{ form_row(formAddEditVehicule.prix_journalier , {'attr':{'placeholder':"Prix de la vehicule"}}) }}
+                {% if etatButton==0%}
+                    <button type="submit" class="btn btn-success mt-3">Ajouter la vehicule</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary mt-3">Modifier la vehicule</button>
+                {% endif %}
+            {{ form_end(formAddEditVehicule) }}
+    </div>
+{% endblock %}

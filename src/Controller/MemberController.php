@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Controller;
-use DateTime;
+
 use App\Entity\Member;
 use App\Form\AddEditMemberType;
 use App\Form\MemberLoginType;
+use App\Form\ProfilType;
 use App\Form\SearchMemberType;
 use App\Repository\CommandeRepository;
 use App\Repository\MemberRepository;
@@ -14,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class MemberController extends AbstractController
 {
@@ -39,10 +39,12 @@ class MemberController extends AbstractController
             $member=new Member();
             $etat=0;
         }
-        $form=$this->createForm(AddEditMemberType::class);
+        $form=$this->createForm(AddEditMemberType::class,$member);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            $member->setDateEnregistrement(new DateTime());
+            $avecHachageMdp=password_hash($member->getMdp(), PASSWORD_BCRYPT);
+            $member->setMdp($avecHachageMdp);
+            $member->setDateEnregistrement(new \DateTime());
             $manager->persist($member);
             $manager->flush();
         }
@@ -80,17 +82,16 @@ class MemberController extends AbstractController
 
 
     #[Route('/member/login', name: 'app_member_login')]
-    public function login(Member $member=null , MemberRepository $memberRepository ,Request $request,SessionInterface $session): Response
+    public function login(MemberRepository $memberRepository ,Request $request,SessionInterface $session): Response
     {
-        $member=new Member();
         $message=null;
         $id=null;
         $form=$this->createForm(MemberLoginType::class);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            $memberfindRepo=$memberRepository->findOneBy(['email'=>$form->get('pseudo')->getData() ,'pseudo'=>$form->get('pseudo')->getData()]);
+            $memberfindRepo=$memberRepository->findForLogin(strval($form->get('pseudo')->getData()));
             $memberfind=$memberfindRepo[0];
-            if($memberfind!=null && password_verify($member->getMdp(),$memberfind->getMdp())){
+            if($memberfind!=null && password_verify($form->get('mdp')->getData(),$memberfind->getMdp())){
                 $id=$memberfind->getId();
                 $session->set('idMember', $id);
                 return $this->redirectToRoute('app_home', ['idMember'=>$id]);
@@ -108,5 +109,17 @@ class MemberController extends AbstractController
     {
         $session->remove('idMember');
         return $this->redirectToRoute('app_home');
+    }
+
+    #[Route('/member/profil/{id}', name: 'app_profil')]
+    public function profil(Member $member=null,Request $request): Response
+    {
+        $form=$this->createForm(ProfilType::class,$member);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+
+            return $this->redirectToRoute('app_member_edit',['member'=>$member]);
+        }
+        return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat]);
     }
 }

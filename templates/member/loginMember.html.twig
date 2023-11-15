@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% form_theme formLogin 'bootstrap_4_layout.html.twig' %}
+{% block body%}
+    <div class="m-3 p-2">
+            <h1>Connexion</h1>
+            <hr>
+            {{ form_start(formLogin) }}
+                {{ form_row(formLogin.pseudo , {'attr':{'placeholder':"Pseudo du membre"}}) }}
+                {{ form_row(formLogin.mdp , {'attr':{'placeholder':"Mot de passe"}}) }}
+                <button type="submit" class="btn btn-success mt-3">Connexion</button>
+            {{ form_end(formLogin) }}
+    </div>
+{% endblock %}

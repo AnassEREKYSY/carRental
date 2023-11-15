@@ -4,7 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Boolean;
+use phpDocumentor\Reflection\Types\String_;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Member>
@@ -16,7 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MemberRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry,EntityManagerInterface $manager)
     {
         parent::__construct($registry, Member::class);
     }
@@ -26,6 +30,16 @@ class MemberRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
+    }
+
+    public function findForLogin(string $str): array
+    {
+        return $this->createQueryBuilder('m')
+                ->orWhere('LOWER(m.pseudo)=:searchTerm1')
+                ->orWhere('LOWER(m.email)=:searchTerm1')
+                ->setParameter('searchTerm1',strtolower($str))
+                ->getQuery()->getResult();
+        
     }
 
 //    /**

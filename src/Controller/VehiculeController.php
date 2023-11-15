@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Vehicule;
+use App\Form\AddEditVehiculeType;
 use App\Form\SearchVehiculeType;
 use App\Repository\VehiculeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,17 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VehiculeController extends AbstractController
 {
     #[Route('/vehicule', name: 'app_vehicule')]
     public function index(VehiculeRepository $vehiculeRepository ,SessionInterface $session): Response
     {
-        $form=$this->createForm(SearchMemberType::class);
+        $form=$this->createForm(SearchVehiculeType::class);
         $result = $session->get('search_result');
         $session->remove('search_result');
         $vehicules = $result ?? $vehiculeRepository->findAll();
@@ -32,49 +33,39 @@ class VehiculeController extends AbstractController
 
     #[Route('/vehicule/new', name: 'app_vehicule_add')]
     #[Route('/vehicule/edit/{id}', name: 'app_vehicule_edit')]
-    public function newEdit(Vehicule $vehicule=null,Request $request ,EntityManagerInterface $manager): Response
+    public function newEdit(Vehicule $vehicule=null,Request $request ,
+                                EntityManagerInterface $manager,SluggerInterface $slugger): Response
     {
         $etat=1;
         if(!$vehicule){
-            $member=new Vehicule();
+            $vehicule=new Vehicule();
             $etat=0;
         }
-        $form=$this->createFormBuilder($vehicule)
-            ->add('pseudo')
-            ->add('nom')
-            ->add('prenom')
-            ->add('email')
-            ->add('mdp',PasswordType::class,['label'=>'Mot de passe'])
-            ->add('civilite', ChoiceType::class, [
-                'choices' => [
-                    'Homme' => '1',
-                    'Femme' => '0',
-                ],
-                'expanded' => false, 
-                'multiple' => false, 
-                'label' => 'Civilité',
-            ])
-            ->add('statut', ChoiceType::class, [
-                'choices' => [
-                    'Admin' => '1',
-                    'Utilisateur' => '0',
-                ],
-                'expanded' => false, 
-                'multiple' => false,
-                'label' => 'Statut',
-            ])
-            ->add('date_enregistrement',DateType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date',
-                'attr' => ['class' => 'datepicker'],
-            ])
-            ->getForm();
+        $form=$this->createForm(AddEditVehiculeType::class,$vehicule);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            $manager->persist($member);
+            $vehicule->setDateEnregistrement(new \DateTime());
+            if($form->get('photo')->getData() !=null){
+                $File = $form->get('photo')->getData();
+                if ($File) {
+                    $originalFilename = pathinfo($File->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$File->guessExtension();
+                    try {
+                        $File->move(
+                            $this->getParameter('vehicules_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
+                    }
+                    $vehicule->setPhoto($newFilename);
+                }
+            }
+            $manager->persist($vehicule);
             $manager->flush();
         }
-        return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat]);
+        return $this->render('vehicule/addVehicule.html.twig',['formAddEditVehicule'=>$form->createView() ,'etatButton'=>$etat]);
     }
 
     #[Route('/vehicule/search', name: 'app_vehicule_search', methods:['GET','POST'])]
@@ -89,7 +80,6 @@ class VehiculeController extends AbstractController
                     ->where($qb->expr()->like('LOWER(v.titre)', ':searchTerm1'))
                     ->orWhere($qb->expr()->like('LOWER(v.marque)', ':searchTerm1'))
                     ->orWhere($qb->expr()->like('LOWER(v.modele)', ':searchTerm1'))
-                    ->orWhere($qb->expr()->like('LOWER(v.prix)', ':searchTerm1'))
                     ->setParameter('searchTerm1', '%' . strtolower($form->get('champs')->getData()) . '%');
             $result = $qb->getQuery()->getResult();
             $session->set('search_result', $result);
