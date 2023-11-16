@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% form_theme formAddEditCommande 'bootstrap_4_layout.html.twig' %}
+{% block body%}
+    <div class="m-3 p-2">
+            {% if etatButton ==1 %}
+                <h1>Modification d'une commande</h1>
+            {% else %}
+                <h1>Ajout d'une commande</h1>
+            {% endif %}
+            <hr>
+            {{ form_start(formAddEditCommande) }}
+                {{ form_row(formAddEditCommande.date_depart) }}
+                {{ form_row(formAddEditCommande.date_fin) }}
+                {{ form_row(formAddEditCommande.vehicule) }}
+                {{ form_row(formAddEditCommande.member) }}
+                {% if etatButton==0%}
+                    <button type="submit" class="btn btn-success mt-3">Ajouter la commande</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary mt-3">Modifier la commande</button>
+                {% endif %}
+            {{ form_end(formAddEditCommande) }}
+    </div>
+{% endblock %}

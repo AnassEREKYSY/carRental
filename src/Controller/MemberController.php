@@ -11,6 +11,7 @@ use App\Repository\CommandeRepository;
 use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -32,14 +33,23 @@ class MemberController extends AbstractController
 
     #[Route('/member/new', name: 'app_member_add')]
     #[Route('/member/edit/{id}', name: 'app_member_edit')]
-    public function newEdit(Member $member=null,Request $request ,EntityManagerInterface $manager): Response
+    public function newEdit(Member $member=null,Request $request ,EntityManagerInterface $manager
+                            ,FormInterface $formProfil = null): Response
     {
+        $operationType=0;
         $etat=1;
+        $form=null;
+        $message="Erruer!! Veuillez corriger les erreurs";
         if(!$member){
             $member=new Member();
             $etat=0;
         }
-        $form=$this->createForm(AddEditMemberType::class,$member);
+        if($formProfil!=null){
+            $form=$this->createForm(ProfilType::class,$member);
+            $operationType=1;
+        }else{
+            $form=$this->createForm(AddEditMemberType::class,$member);
+        }
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $avecHachageMdp=password_hash($member->getMdp(), PASSWORD_BCRYPT);
@@ -47,8 +57,13 @@ class MemberController extends AbstractController
             $member->setDateEnregistrement(new \DateTime());
             $manager->persist($member);
             $manager->flush();
+            $message="Operation s'est fait avec succés !!";
         }
-        return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat]);
+        if($operationType==0){
+            return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat, 'message'=>$message,]);
+        }else{
+            return $this->render('member/profil.html.twig',['formProfil'=>$form->createView(),'message'=>$message,]);
+        }
     }
 
     #[Route('/member/search', name: 'app_member_search', methods:['GET','POST'])]
@@ -114,12 +129,14 @@ class MemberController extends AbstractController
     #[Route('/member/profil/{id}', name: 'app_profil')]
     public function profil(Member $member=null,Request $request): Response
     {
+        $message=null;
         $form=$this->createForm(ProfilType::class,$member);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-
-            return $this->redirectToRoute('app_member_edit',['member'=>$member]);
+            return $this->forward('App\\Controller\\MemberController::newEdit',[
+                'member'=>$member,'formProfil'=>$form
+            ]);
         }
-        return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat]);
+        return $this->render('member/profil.html.twig',['formProfil'=>$form->createView(), 'message'=>$message,]);
     }
 }

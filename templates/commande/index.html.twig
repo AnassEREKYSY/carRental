@@ -1,20 +1,85 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello CommandeController!{% endblock %}
+{% form_theme formSearch 'bootstrap_4_layout.html.twig' %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .example-wrapper { 
+        margin: 1em auto; 
+        max-width: 1300px;
+         width: 100%; 
+         font: 18px/1.5 sans-serif; 
+    }
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow p-2 m-5 bg-body rounded  text-center">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bolder mx-5" href="{{ path('app_commande') }}">Commande</a>
+            <div class="collapse navbar-collapse mx-5" id="navbarColor03">
+                    <ul class="navbar-nav me-auto ">
+                        <li class="nav-item mx-5  fw-bolder">
+                            <a class="nav-link" href="{{ path('app_commande_add') }}">Ajouter</a>
+                        </li>
+                        <li>
+                            {{ form_start(formSearch) }}
+                                {{ form_row(formSearch.champs, {'attr': {'placeholder': "Tapez ...."}}) }}
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <i class="fas fa-search"></i> 
+                                </button>
+                            {{ form_end(formSearch) }}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'D:/H3 hitema Paris/cours/Symfony/CarRental/carRental/src/Controller/CommandeController.php'|file_link(0) }}">src/Controller/CommandeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'D:/H3 hitema Paris/cours/Symfony/CarRental/carRental/templates/commande/index.html.twig'|file_link(0) }}">templates/commande/index.html.twig</a></code></li>
-    </ul>
+                        </li>
+                        <li>
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <a  href="{{ path('app_member_login') }}">
+                                      <i class="fas fa-user"></i>
+                                </a>
+                            </button>
+                        </li>
+                    </ul>
+
+            </div>
+        </div>
+    </nav>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Member</th>
+                <th scope="col">Vehicule</th>
+                <th scope="col">Date depart</th>
+                <th scope="col">Date retour</th>
+                <th scope="col">Prix total</th>
+                <th scope="col">Date d'enregistrement</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if commandes%}
+                {% for commande in commandes %}
+                        <tr>
+                            <td scope="col">{{commande.id}}</td>
+                            <td scope="col">{{commande.getIdMember.pseudo}} <br>{{commande.getIdMember.email}}</td>
+                            <td scope="col">{{commande.getIdVehicule.marque}} <br>{{commande.getIdVehicule.modele}}</td>
+                            <td scope="col">{{commande.getDateDepart | date('d/m/y') }}</td>
+                            <td scope="col">{{commande.getDateFin | date('d/m/y') }}</td>
+                            <td scope="col">{{commande.getDateEnregistrement | date('d/m/y') }}</td>
+                            <td scope="col">
+                                <button type="button" class="btn btn-primary btn-sm">
+                                    <a href="{{ path('app_commande_edit',{'id':commande.id})}}">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    <a href="{{ path('app_commande_delete',{'id':commande.id})}}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </button>
+                            </td>
+                        </tr>
+                   {% endfor %}
+                {% endif %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
