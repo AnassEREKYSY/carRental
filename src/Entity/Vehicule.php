@@ -40,6 +40,9 @@ class Vehicule
     #[ORM\OneToMany(mappedBy: 'id_vehicule', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    #[ORM\Column(length: 20)]
+    private ?string $available = null;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -160,6 +163,18 @@ class Vehicule
                 $commande->setIdVehicule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAvailable(): ?string
+    {
+        return $this->available;
+    }
+
+    public function setAvailable(string $available): static
+    {
+        $this->available = $available;
 
         return $this;
     }

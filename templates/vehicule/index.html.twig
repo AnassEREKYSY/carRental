@@ -68,6 +68,16 @@
                             </td>
                             <td scope="col">{{vehicule.getPrixJournalier}} $</td>
                             <td scope="col">{{vehicule.getDateEnregistrement | date('d/m/y') }}</td>
+                            <td scope="col">{{vehicule.available }}</td>
+                            {% if statutUser ==0%}
+                                <td scope="col">
+                                    <button type="button" class="btn btn-success btn-sm">
+                                        <a href="">
+                                            réserver
+                                        </a>
+                                    </button>
+                                </td>
+                            {% else %}
                             <td scope="col">
                                 <button type="button" class="btn btn-primary btn-sm">
                                     <a href="{{ path('app_vehicule_edit',{'id':vehicule.id})}}">
@@ -80,6 +90,8 @@
                                     </a>
                                 </button>
                             </td>
+                            {% endif %}
+
                         </tr>
                    {% endfor %}
                 {% endif %}

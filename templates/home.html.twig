@@ -3,7 +3,7 @@
 {% block body %}
 <style>
     .example-wrapper { 
-        height:720px;
+        height:715px;
         width: 100%; 
         font: 18px/1.5 sans-serif; 
         background: url('/images/pexels-oziel-gómez-849835.jpg') no-repeat;
@@ -14,30 +14,58 @@
     .example-wrapper code { 
         padding: 2px 6px; 
     }
+    .datePicker{
+        width:420px;
+        padding:20px;
+        text-align:center;
+        border-radius:20px;
+        box-shadow: 2px 1px 4px 5px rgba(0, 0, 0, 0.2);
+        position:absolute;
+        right:85px;
+        top:280px;
+        font-weight: bold;
+        cursor:pointer;
+    }
+    .datePicker .datepickerItem{
+        display: flex;
+        justify-content: flex-start;
+    }
+    .title{
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        width:890px;
+        text-align:center; 
+        font-size:50px;
+        position:absolute;
+        right:330px;
+        top:35px;
+    }
+    .title h1{
+        font-family:"Brush Script MT, Brush Script Std, cursive";font-size:50px;
+    }
+    h5{
+        font-size:30px;
+        position:absolute;
+        right:195px;
+        top:230px;
+    }
+    
 </style>
 
 <div class="example-wrapper">
-    <h1>Bienvenue à bord</h1>
-    <h2>Location de voiture 24H/24 7j/7</h2>
-    <div>
+    <div class="title">
+        <h1>Bienvenue à bord</h1>
+        <h4>Location de voiture 24H/24 7j/7</h4>
+    </div>
+    <h5>Book ta voiture</h5>
+    <div class="datePicker">
         {{ form_start(formDatePicker) }}
-            {{ form_row(formDatePicker.datedebut) }}
-            {{ form_row(formDatePicker.datefin) }}
+            {{ form_label(formDatePicker.datedebut,null,{'label_attr':{'class':'datepickerItem'}}) }}
+            {{ form_widget(formDatePicker.datedebut) }}
+            {{ form_label(formDatePicker.datefin,null,{'label_attr':{'class':'datepickerItem'}}) }}
+            {{ form_widget(formDatePicker.datefin) }}
             <button type="submit" class="btn btn-success mt-3">Valider</button>
         {{ form_end(formDatePicker) }}
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('.datepicker').datepicker();
-        });
-    </script>
-
-
-
-
 </div>
 {% endblock %}

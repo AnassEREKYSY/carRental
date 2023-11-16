@@ -18,11 +18,18 @@ use Symfony\Component\HttpFoundation\Request;
 class CommandeController extends AbstractController
 {
     #[Route('/commande', name: 'app_commande')]
-    public function index(CommandeRepository $commandeRepository,SessionInterface $session): Response
+    public function index(CommandeRepository $commandeRepository,SessionInterface $session,
+                            VehiculeRepository $vehiculeRepository,MemberRepository $memberRepository): Response
     {
         $form=$this->createForm(SearchCommandeType::class);
         $result = $session->get('search_result');
         $session->remove('search_result');
+        if($result){
+            $vehicule=$vehiculeRepository->findOneBy(['id'=>$result[0]->getIdVehicule()->getId()]);
+            $member=$memberRepository->findOneBy(['id'=>$result[0]->getIdMember()->getId()]);
+            $result[0]->setIdVehicule($vehicule);
+            $result[0]->setIdMember($member);
+        }
         $commandes = $result ?? $commandeRepository->findAll();
         return $this->render('/commande/index.html.twig', [
             'commandes' => $commandes,'formSearch'=>$form

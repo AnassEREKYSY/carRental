@@ -2,29 +2,24 @@
 
 namespace App\Controller;
 
+use App\Form\HomeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
     #[Route('/home', name: 'app_home')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $form=$this->createFormBuilder()
-            ->add('datedebut', DateType::class, [
-                'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'datepicker']])
-            ->add('datefin', DateType::class, [
-                'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'datepicker']])
-            ->getForm();
+        $form=$this->createForm(HomeType::class);
+        $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-           
-            //return $this->redirectToRoute('app_article_details',['id'=>$member->getId()]);
+            $date_debut=$form->get('datedebut')->getData();
+            $date_fin=$form->get('datefin')->getData();
+            return $this->forward('App\\Controller\\VehiculeController::index',['dateDebut'=>$date_debut,'dateFin'=>$date_fin]);
         }
         return $this->render('home.html.twig', ['formDatePicker'=>$form->createView() ]);
     }

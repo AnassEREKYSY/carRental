@@ -54,6 +54,7 @@ class MemberController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $avecHachageMdp=password_hash($member->getMdp(), PASSWORD_BCRYPT);
             $member->setMdp($avecHachageMdp);
+            $member->setStatut(0);
             $member->setDateEnregistrement(new \DateTime());
             $manager->persist($member);
             $manager->flush();

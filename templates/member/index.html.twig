@@ -51,7 +51,6 @@
                 <th scope="col">Prenom</th>
                 <th scope="col">Email</th>
                 <th scope="col">Civilité</th>
-                <th scope="col">Statut</th>
                 <th scope="col">Date d'enregistrement</th>
                 <th scope="col"></th>
             </tr>
@@ -65,7 +64,6 @@
                             <td scope="col">{{member.nom}}</td>
                             <td scope="col">{{member.prenom}}</td>
                             <td scope="col">{{member.email}}</td>
-                            <td scope="col">{{member.statut}}</td>
                             {% if member.civilite == 0 %}
                                 <td scope="col">Femme</td>
                             {% else %}

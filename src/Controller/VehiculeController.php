@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Vehicule;
 use App\Form\AddEditVehiculeType;
 use App\Form\SearchVehiculeType;
+use App\Repository\MemberRepository;
 use App\Repository\VehiculeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,14 +19,20 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class VehiculeController extends AbstractController
 {
     #[Route('/vehicule', name: 'app_vehicule')]
-    public function index(VehiculeRepository $vehiculeRepository ,SessionInterface $session): Response
+    public function index(VehiculeRepository $vehiculeRepository ,SessionInterface $session,
+                        MemberRepository $memberRepository, $dateDebut,$dateFin): Response
     {
+        $CarsBtweenDates=null;
+        $statutUser=null;
         $form=$this->createForm(SearchVehiculeType::class);
         $result = $session->get('search_result');
         $session->remove('search_result');
         $vehicules = $result ?? $vehiculeRepository->findAll();
+        if($session->get('idMember')){
+            $statutUser=$memberRepository->findOneBy(['id'=>$session->get('idMember')])->getStatut();
+        }
         return $this->render('/vehicule/index.html.twig', [
-            'vehicules' => $vehicules,'formSearch'=>$form
+            'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser
         ]);
     }
 
@@ -44,6 +51,7 @@ class VehiculeController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $vehicule->setDateEnregistrement(new \DateTime());
+            $vehicule->setAvailable("oui");
             if($form->get('photo')->getData() !=null){
                 $File = $form->get('photo')->getData();
                 if ($File) {

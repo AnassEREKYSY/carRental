@@ -64,4 +64,10 @@ class CommandeRepository extends ServiceEntityRepository
 
         $query->execute();
     }
+
+    public function remove(Commande $entity): void
+    {
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
+    }
 }

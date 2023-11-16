@@ -28,15 +28,6 @@ class AddEditMemberType extends AbstractType
             'multiple' => false, 
             'label' => 'Civilité',
         ])
-        ->add('statut', ChoiceType::class, [
-            'choices' => [
-                'Admin' => '1',
-                'Utilisateur' => '0',
-            ],
-            'expanded' => false, 
-            'multiple' => false,
-            'label' => 'Statut',
-        ])
         ;
     }
 
