@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Commande;
 use App\Entity\Vehicule;
+use ArrayObject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,23 +31,30 @@ class VehiculeRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function searchAvailableCars($dateDebut,$dateFin,Request $request,EntityManagerInterface $manager): void
+    public function searchAvailableCars($dateDebut,$dateFin): array
     {
-        $qb = $manager->createQueryBuilder();
-        $qb->select('c')
-        ->from(Commande::class, 'c')
-        ->leftJoin('c.id_vehicule', 'v')
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('v')
+        ->from(Vehicule::class, 'v')
+        ->leftJoin('v.commandes', 'c')
         ->where(
             $qb->expr()->orX(
-                $qb->where($qb->expr()->not($qb->expr()->between('c.dateDebut' ,':datDebut',':dateFin')))
-                ->andWhere($qb->expr()->not($qb->expr()->between('c.dateFin' ,':dateFin',':dateFin')))
-                ->setParameter('monday', $monday->format('Y-m-d'))
-                ->setParameter('sunday', $sunday->format('Y-m-d'))
+                $qb->expr()->andX(
+                    $qb->expr()->not($qb->expr()->between('c.date_depart', ':dateDebut', ':dateFin')),
+                    $qb->expr()->not($qb->expr()->between('c.date_fin', ':dateDebut', ':dateFin')),
+                    $qb->expr()->not($qb->expr()->like('c.date_fin', ':dateFin')),
+                    $qb->expr()->not($qb->expr()->like('c.date_depart', ':dateDebut'))
+                ),
+                $qb->expr()->eq('v.available', ':available')
             )
         )
-        ->setParameter('searchTerm1', '%' . strtolower($form->get('champs')->getData()) . '%');
-$result = $qb->getQuery()->getResult();
-        $this->getEntityManager()->flush();
+        ->setParameters([
+            'dateFin' => $dateFin,
+            'dateDebut' => $dateDebut,
+            'available' => 'oui'
+        ]);
+        return $qb->getQuery()->getresult();
+        
     }
 
 //    /**

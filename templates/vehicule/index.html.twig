@@ -29,11 +29,25 @@
 
                         </li>
                         <li>
-                            <button type="submit" class="btn btn-primary mt-3">
-                                <a  href="{{ path('app_member_login') }}">
-                                      <i class="fas fa-user"></i>
-                                </a>
-                            </button>
+                            {% if idMember %}
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <a  href="{{ path('app_profil', {'id':idMember}) }}">
+                                        <i class="fas fa-user"></i>
+                                    </a>
+                                </button>
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <a  href="{{ path('app_member_logout') }}">
+                                        <i class="fas fa-sign-out"></i>
+                                    </a>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <a  href="{{ path('app_member_login') }}">
+                                        <i class="fas fa-user"></i>
+                                    </a>
+                                </button>
+                            {% endif %}
+
                         </li>
                     </ul>
 
@@ -51,6 +65,7 @@
                 <th scope="col">Photo</th>
                 <th scope="col">Prix</th>
                 <th scope="col">Date d'enregistrement</th>
+                <th scope="col">Disponible</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -72,7 +87,7 @@
                             {% if statutUser ==0%}
                                 <td scope="col">
                                     <button type="button" class="btn btn-success btn-sm">
-                                        <a href="">
+                                        <a href="{{ path('app_commande_add',{'id':vehicule.id,'idMember':idMember})}}">
                                             réserver
                                         </a>
                                     </button>

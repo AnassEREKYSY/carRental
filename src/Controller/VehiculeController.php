@@ -20,19 +20,29 @@ class VehiculeController extends AbstractController
 {
     #[Route('/vehicule', name: 'app_vehicule')]
     public function index(VehiculeRepository $vehiculeRepository ,SessionInterface $session,
-                        MemberRepository $memberRepository, $dateDebut,$dateFin): Response
+                        MemberRepository $memberRepository, $dateDebut=null,$dateFin=null): Response
     {
-        $CarsBtweenDates=null;
+        $vehicules=null;
+        $availableCars=null;
+        if($dateDebut!=null && $dateFin!=null){
+            $availableCars=$vehiculeRepository->searchAvailableCars($dateDebut,$dateFin);
+        }
         $statutUser=null;
         $form=$this->createForm(SearchVehiculeType::class);
         $result = $session->get('search_result');
         $session->remove('search_result');
-        $vehicules = $result ?? $vehiculeRepository->findAll();
+        $session->set('dateDepart',$dateDebut);
+        $session->set('dateFin',$dateFin);
+        if($availableCars !=null){
+            $vehicules = $availableCars;
+        }else{
+            $vehicules = $result ?? $vehiculeRepository->findAll();
+        }
         if($session->get('idMember')){
             $statutUser=$memberRepository->findOneBy(['id'=>$session->get('idMember')])->getStatut();
         }
         return $this->render('/vehicule/index.html.twig', [
-            'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser
+            'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser,'idMember'=>$session->get('idMember')
         ]);
     }
 

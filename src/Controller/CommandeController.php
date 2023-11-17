@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Member;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +15,7 @@ use App\Repository\VehiculeRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\String\UnicodeString;
 
 class CommandeController extends AbstractController
 {
@@ -37,22 +39,37 @@ class CommandeController extends AbstractController
     }
 
     
-    #[Route('/commande/new', name: 'app_commande_add')]
+    #[Route('/commande/new/{id?0}', name: 'app_commande_add')]
     #[Route('/commande/edit/{id}', name: 'app_commande_edit')]
     public function newEdit(Commande $commande=null,Request $request ,MemberRepository $memberRepository,
-                                EntityManagerInterface $manager, VehiculeRepository $vehiculeRepository): Response
+                                EntityManagerInterface $manager, VehiculeRepository $vehiculeRepository,
+                                $id,SessionInterface $session): Response
     {
         $etat=1;
+        $memberId=null;
+        $vehiculeId=null;
         if(!$commande){
             $commande=new Commande();
             $etat=0;
         }
         $form=$this->createForm(AddEditCommandeType::class,$commande);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        $dateDepart=$session->get("dateDepart");
+        $dateFin=$session->get("dateFin");
+        if($id){
+            $memberId=$session->get('idMember');
+            $vehiculeId=(int)$id;
+        }else{
+            $memberId=$form->get('member')->getData();
+            $vehiculeId=$form->get('vehicule')->getData();
+        }
+        if(($form->isSubmitted() && $form->isValid()) || ($id!=0 && $memberId!=0)){
             $commande->setDateEnregistrement(new \DateTime());
-            $member=$memberRepository->findOneBy(['id'=>$form->get('member')->getData()]);
-            $vehicule=$vehiculeRepository->findOneBy(['id'=>$form->get('vehicule')->getData()]);
+            $commande->setDateDepart($dateDepart);
+            $commande->setDateFin($dateFin);
+            $member=$memberRepository->findOneBy(['id'=>$memberId]);
+            $vehicule=$vehiculeRepository->findOneBy(['id'=>$vehiculeId]);
+            $vehicule->setAvailable("non");
             $commande->setIdVehicule($vehicule);
             $commande->setIdMember($member);
             $days=$commande->getDateDepart()->diff($commande->getDateFin())->days;
@@ -60,6 +77,7 @@ class CommandeController extends AbstractController
             $commande->setPrixTotal($prix);
             $manager->persist($commande);
             $manager->flush();
+            return $this->redirectToRoute('app_commande');
         }
         return $this->render('commande/addCommande.html.twig',['formAddEditCommande'=>$form->createView() ,'etatButton'=>$etat]);
     }
@@ -99,6 +117,7 @@ class CommandeController extends AbstractController
     #[Route('/commande/delete/{id?0}', name: 'app_commande_delete')]
     public function delete(Commande $commande,CommandeRepository $commandeRepository): Response
     {
+        $commande->getIdVehicule()->setAvailable("oui");
         $commandeRepository->remove($commande);
         return $this->redirectToRoute('app_commande');
     }
