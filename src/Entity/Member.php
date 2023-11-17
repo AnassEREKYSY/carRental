@@ -7,9 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
-class Member
+class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -43,9 +45,13 @@ class Member
     #[ORM\OneToMany(mappedBy: 'id_member', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->roles=['ROLE_USER'];
     }
 
     public function getId(): ?int
@@ -178,4 +184,49 @@ class Member
 
         return $this;
     }
+  /**
+     * Returns the roles granted to the user.
+     *
+     * @return string[]
+     */
+    public function getRoles(): array
+    {
+        $roles=$this->roles;
+        $roles[]='ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getUsername()
+    {
+        return $this->email; // Assuming email is used as the username
+    }
+
+    public function getPassword():string
+    {
+        return $this->mdp;
+    }
+
+    public function getSalt()
+    {
+        // You don't need a salt if you're using bcrypt or a modern hashing algorithm
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getUserIdentifier():string{
+        return (string)$this->email;
+    }
+
+    
 }

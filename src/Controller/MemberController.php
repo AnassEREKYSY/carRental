@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class MemberController extends AbstractController
 {
@@ -58,12 +59,12 @@ class MemberController extends AbstractController
             $member->setDateEnregistrement(new \DateTime());
             $manager->persist($member);
             $manager->flush();
-            $message="Operation s'est fait avec succés !!";
+            flash()->addSuccess("L'operation est passé avec succés");
         }
         if($operationType==0){
-            return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat, 'message'=>$message,]);
+            return $this->render('member/addMember.html.twig',['formAddEditMember'=>$form->createView() ,'etatButton'=>$etat,]);
         }else{
-            return $this->render('member/profil.html.twig',['formProfil'=>$form->createView(),'message'=>$message,]);
+            return $this->render('member/profil.html.twig',['formProfil'=>$form->createView(),]);
         }
     }
 
@@ -98,33 +99,25 @@ class MemberController extends AbstractController
 
 
     #[Route('/member/login', name: 'app_member_login')]
-    public function login(MemberRepository $memberRepository ,Request $request,SessionInterface $session): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $message=null;
-        $id=null;
-        $form=$this->createForm(MemberLoginType::class);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $memberfindRepo=$memberRepository->findForLogin(strval($form->get('pseudo')->getData()));
-            $memberfind=$memberfindRepo[0];
-            if($memberfind!=null && password_verify($form->get('mdp')->getData(),$memberfind->getMdp())){
-                $id=$memberfind->getId();
-                $session->set('idMember', $id);
-                return $this->redirectToRoute('app_home', ['idMember'=>$id]);
-            }else{
-                $message="Attention !! Login ou mot de passe est incorrecte";
-                return $this->render('member/loginMember.html.twig', ['formLogin'=>$form->createView(), 'message'=>$message]);
-            }
-        }
-        return $this->render('member/loginMember.html.twig', ['formLogin'=>$form->createView(),'message'=>$message]);
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+        return $this->render('member/loginMember.html.twig', [
+            'last_username' => $lastUsername,
+            'error'         => $error
+        ]);
     }
 
 
     #[Route('/member/logout', name: 'app_member_logout')]
-    public function logout(SessionInterface $session): Response
+    public function logout(): Response
     {
-        $session->remove('idMember');
-        return $this->redirectToRoute('app_home');
+        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+        flash()->addInfo("Logout fait avec succés");
     }
 
     #[Route('/member/profil/{id}', name: 'app_profil')]

@@ -21,7 +21,7 @@ class CommandeController extends AbstractController
 {
     #[Route('/commande', name: 'app_commande')]
     public function index(CommandeRepository $commandeRepository,SessionInterface $session,
-                            VehiculeRepository $vehiculeRepository,MemberRepository $memberRepository): Response
+                            VehiculeRepository $vehiculeRepository,MemberRepository $memberRepository,$op=0): Response
     {
         $form=$this->createForm(SearchCommandeType::class);
         $result = $session->get('search_result');
@@ -33,6 +33,9 @@ class CommandeController extends AbstractController
             $result[0]->setIdMember($member);
         }
         $commandes = $result ?? $commandeRepository->findAll();
+        if((int)$op && (int)$op==1){
+            flash()->addSuccess("L'operation est passé avec succés");
+        }
         return $this->render('/commande/index.html.twig', [
             'commandes' => $commandes,'formSearch'=>$form
         ]);
@@ -57,7 +60,9 @@ class CommandeController extends AbstractController
         $dateDepart=$session->get("dateDepart");
         $dateFin=$session->get("dateFin");
         if($id){
-            $memberId=$session->get('idMember');
+            $user=$this->getUser();
+            if( $user instanceof Member)
+                $memberId=$user->getId();
             $vehiculeId=(int)$id;
         }else{
             $memberId=$form->get('member')->getData();
@@ -77,6 +82,7 @@ class CommandeController extends AbstractController
             $commande->setPrixTotal($prix);
             $manager->persist($commande);
             $manager->flush();
+            flash()->addSuccess("L'operation est passé avec succés");
             return $this->redirectToRoute('app_commande');
         }
         return $this->render('commande/addCommande.html.twig',['formAddEditCommande'=>$form->createView() ,'etatButton'=>$etat]);
@@ -119,6 +125,6 @@ class CommandeController extends AbstractController
     {
         $commande->getIdVehicule()->setAvailable("oui");
         $commandeRepository->remove($commande);
-        return $this->redirectToRoute('app_commande');
+        return $this->redirectToRoute('app_commande',['op'=>1]);
     }
 }

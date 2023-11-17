@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Member;
 use App\Entity\Vehicule;
 use App\Form\AddEditVehiculeType;
 use App\Form\SearchVehiculeType;
@@ -23,10 +24,12 @@ class VehiculeController extends AbstractController
                         MemberRepository $memberRepository, $dateDebut=null,$dateFin=null): Response
     {
         $vehicules=null;
+        $userId=null;
         $availableCars=null;
         if($dateDebut!=null && $dateFin!=null){
             $availableCars=$vehiculeRepository->searchAvailableCars($dateDebut,$dateFin);
         }
+        $user=$this->getUser();
         $statutUser=null;
         $form=$this->createForm(SearchVehiculeType::class);
         $result = $session->get('search_result');
@@ -38,11 +41,12 @@ class VehiculeController extends AbstractController
         }else{
             $vehicules = $result ?? $vehiculeRepository->findAll();
         }
-        if($session->get('idMember')){
-            $statutUser=$memberRepository->findOneBy(['id'=>$session->get('idMember')])->getStatut();
+        if($user && $user instanceof Member){
+            $statutUser=$memberRepository->findOneBy(['id'=>$user->getId()])->getStatut();
+            $userId=$user->getId();
         }
         return $this->render('/vehicule/index.html.twig', [
-            'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser,'idMember'=>$session->get('idMember')
+            'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser,'idMember'=>$userId
         ]);
     }
 
@@ -79,8 +83,10 @@ class VehiculeController extends AbstractController
                     $vehicule->setPhoto($newFilename);
                 }
             }
+            
             $manager->persist($vehicule);
             $manager->flush();
+            flash()->addSuccess("L'operation est passé avec succés");
         }
         return $this->render('vehicule/addVehicule.html.twig',['formAddEditVehicule'=>$form->createView() ,'etatButton'=>$etat]);
     }
@@ -108,6 +114,7 @@ class VehiculeController extends AbstractController
     public function delete(Vehicule $vehicule,VehiculeRepository $vehiculeRepository): Response
     {
         $vehiculeRepository->remove($vehicule);
+        flash()->addSuccess("L'operation est passé avec succés");
         return $this->redirectToRoute('app_vehicule');
     }
 }

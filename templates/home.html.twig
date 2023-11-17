@@ -49,6 +49,42 @@
         right:195px;
         top:230px;
     }
+    a {
+        text-decoration: none;
+        color: white;
+    }
+    .divButtons{
+        position : absolute;
+        right:185px;
+        top:520px;
+    }
+    .divButtons button {
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .divButtons1{
+        position : absolute;
+        right:235px;
+        top:520px;
+    }
+    .divButtons1 button {
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    }
+    .adminMenu{
+        position : absolute;
+        right:1245px;
+        top:150px;
+    }
+    .adminMenu button{
+        width:150px;
+        height:50px;
+        margin:10px;
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        font-size:22px;
+    }
     
 </style>
 
@@ -67,5 +103,33 @@
             <button type="submit" class="btn btn-success mt-3">Valider</button>
         {{ form_end(formDatePicker) }}
     </div>
+    {% if is_granted("ROLE_USER") %}
+        <div class="divButtons1">
+            <button type="button" class="btn btn-primary">
+                <a href="{{path('app_member_logout')}}">Deconnexion</a>
+            </button>
+        </div>
+    {% else %}
+        <div class="divButtons">
+            <button type="button" class="btn btn-success">
+                <a href="{{path('app_member_login')}}">Connexion</a>
+            </button>
+            <button type="button" class="btn btn-primary">
+                <a href="">S'inscrire</a>
+            </button>
+        </div>
+    {% endif %}
+
+    {% if is_granted("ROLE_ADMIN") %}
+        <div class="adminMenu">
+                <button type="button" class="btn btn-success">
+                    <a href="{{path('app_vehicule')}}">Vehicule</a>
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <a href="{{path('app_member')}}">Member</a>
+                </button>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}
