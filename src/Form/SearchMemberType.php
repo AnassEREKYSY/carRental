@@ -22,8 +22,7 @@ class SearchMemberType extends AbstractType
     {
         $builder
             ->setAction($this->urlGenerator->generate('app_member_search'))
-            ->add('champs',TypeTextType::class,['mapped'=>false,'label'=>false])
-        ;
+            ->add('champs',TypeTextType::class,['mapped'=>false,'label'=>false , 'attr'=>['class'=> 'form-control searchInput',]]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

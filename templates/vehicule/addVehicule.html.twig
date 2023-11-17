@@ -1,13 +1,36 @@
 {% extends 'base.html.twig' %}
 {% form_theme formAddEditVehicule 'bootstrap_4_layout.html.twig' %}
 {% block body%}
-    <div class="m-3 p-2">
+    <style>
+        .divCentral{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        button{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        .addInput{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+            margin-bottom:5px;
+        }
+        a{
+            color:white;
+        }
+    </style>
+    <div class="m-4 p-5 divCentral">
+            <button class="btn btn-primary ">
+                <a class="" href="{{ path('app_member') }}">
+                    <i class="fas fa-home"></i>
+                </a>
+            </button>
             {% if etatButton ==1 %}
-                <h1>Modification d'une vehicule</h1>
+                <h1 style=" text-align: center;">Modification d'une vehicule</h1>
             {% else %}
-                <h1>Ajout d'une vehicule</h1>
+                <h1 style=" text-align: center;">Ajout d'une vehicule</h1>
             {% endif %}
-            <hr>
+            <hr style="width: 550px; margin: 30px auto;">
             {{ form_start(formAddEditVehicule) }}
                 {{ form_row(formAddEditVehicule.titre , {'attr':{'placeholder':"Titre de la vehicule"}}) }}
                 {{ form_row(formAddEditVehicule.marque , {'attr':{'placeholder':"Marque de la vehicule"}}) }}

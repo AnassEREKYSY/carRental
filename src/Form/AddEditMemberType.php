@@ -2,23 +2,24 @@
 
 namespace App\Form;
 use App\Entity\Member;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType as TypeTextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AddEditMemberType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('pseudo')
-        ->add('nom')
-        ->add('prenom')
-        ->add('email')
-        ->add('mdp',PasswordType::class,['label'=>'Mot de passe'])
+        ->add('pseudo' ,TypeTextType::class,['attr'=>['class'=> 'form-control addInput',]])
+        ->add('nom' ,TypeTextType::class, ['attr'=>['class'=> 'form-control addInput',]])
+        ->add('prenom' ,TextType::class, ['attr'=>['class'=> 'form-control addInput',]])
+        ->add('email' ,TextType::class, ['attr'=>['class'=> 'form-control addInput',]])
+        ->add('mdp',PasswordType::class,['label'=>'Mot de passe','attr'=>['class'=> 'form-control addInput',]])
         ->add('civilite', ChoiceType::class, [
             'choices' => [
                 'Homme' => '1',
@@ -27,7 +28,8 @@ class AddEditMemberType extends AbstractType
             'expanded' => false, 
             'multiple' => false, 
             'label' => 'Civilité',
-        ])
+            'attr'=>['class'=> 'form-control addInput',
+        ] ])
         ;
     }
 

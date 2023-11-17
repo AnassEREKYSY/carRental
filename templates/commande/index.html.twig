@@ -9,39 +9,111 @@
          width: 100%; 
          font: 18px/1.5 sans-serif; 
     }
+            a{
+        text-decoration:none;
+        color : white;
+    }
+    table{
+        text-align:center;
+    }
+    button{
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    }
+    tr,td{
+        cursor: pointer;
+    }
+    .loginout{
+        width:200px;
+        right:10px;
+        top: 5px;
+        position:absolute;
+    }
+    .loginout button {
+        margin:20px;
+    }
+    .login button {
+        margin:20px;
+    }
+    .login{
+        width:200px;
+        right:10px;
+        top: 5px;
+        position:absolute;
+    }
+    nav{
+        height:80px;
+    }
+    .searchInput{
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        width:650px;
+        top:20px;
+        right:340px;
+        position: absolute;
+    }
+    .searchBtn{
+        border-radius:40px;
+        right:280px;
+        top: 5px;
+        position:absolute;
+    }
+    .addBtn{
+        border-radius:40px;
+        right:190px;
+        top: 5px;
+        position:absolute;
+        width:40px;
+        height:40px;
+        justify-content:center;
+    }
+    .addBtn a {
+        color:white;
+    }
+    .pageTitle{
+        font-size:30px;
+        right:980px;
+        top: 10px;
+        position:absolute;
+    }
 </style>
 
 <div class="example-wrapper">
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow p-2 m-5 bg-body rounded  text-center">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bolder mx-5" href="{{ path('app_commande') }}">Commande</a>
+            <a class="navbar-brand fw-bolder mx-5 pageTitle" href="{{ path('app_commande') }}">Commande</a>
             <div class="collapse navbar-collapse mx-5" id="navbarColor03">
                     <ul class="navbar-nav me-auto ">
-                        <li class="nav-item mx-5  fw-bolder">
-                            <a class="nav-link" href="{{ path('app_commande_add') }}">Ajouter</a>
-                        </li>
+                        <button class="btn btn-primary mt-3 addBtn">
+                            <a class="" href="{{ path('app_commande_add') }}">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </button>
                         <li>
                             {{ form_start(formSearch) }}
                                 {{ form_row(formSearch.champs, {'attr': {'placeholder': "Tapez ...."}}) }}
-                                <button type="submit" class="btn btn-primary mt-3">
+                                <button type="submit" class="btn btn-primary mt-3 searchBtn">
                                     <i class="fas fa-search"></i> 
                                 </button>
                             {{ form_end(formSearch) }}
 
                         </li>
                         <li>
-                            <button type="submit" class="btn btn-primary mt-3">
-                                <a  href="{{ path('app_member_login') }}">
-                                      <i class="fas fa-user"></i>
-                                </a>
-                            </button>
+                            <div class="loginout">
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <a  href="{{ path('app_member_login') }}">
+                                        <i class="fas fa-user"></i>
+                                    </a>
+                                </button>
+                            </div>
+                            
                         </li>
                     </ul>
 
             </div>
         </div>
     </nav>
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">Id</th>

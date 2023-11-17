@@ -9,18 +9,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextType as TypeTextType;
 
 class AddEditVehiculeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre')
-            ->add('marque')
-            ->add('modele')
-            ->add('description', TextareaType::class)
+            ->add('titre',TypeTextType::class,['attr'=>['class'=> 'form-control addInput',]])
+            ->add('marque',TypeTextType::class,['attr'=>['class'=> 'form-control addInput',]])
+            ->add('modele',TypeTextType::class,['attr'=>['class'=> 'form-control addInput',]])
+            ->add('description', TextareaType::class,['attr'=>['class'=> 'form-control addInput',]])
             ->add('photo', FileType::class, [
-                'label' => 'Choose Photo',
+                'label' => false,
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
@@ -30,7 +32,7 @@ class AddEditVehiculeType extends AbstractType
                     ])
                 ],
             ])
-            ->add('prix_journalier')
+            ->add('prix_journalier',TypeTextType::class,['attr'=>['class'=> 'form-control addInput',]])
         ;
     }
 
