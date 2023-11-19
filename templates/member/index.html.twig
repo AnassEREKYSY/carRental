@@ -101,14 +101,28 @@
 
                         </li>
                         <li>
-                            <div class="loginout">
-                                <button type="submit" class="btn btn-primary mt-3">
-                                    <a  href="{{ path('app_member_login') }}">
-                                        <i class="fas fa-user"></i>
-                                    </a>
-                                </button>
-                            </div>
-                            
+                            {% if idMember %}
+                                <div class="loginout">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <a  href="{{ path('app_profil', {'id':idMember}) }}">
+                                            <i class="fas fa-user"></i>
+                                        </a>
+                                    </button>
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <a  href="{{ path('app_member_logout') }}">
+                                            <i class="fas fa-sign-out"></i>
+                                        </a>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="login">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <a  href="{{ path('app_member_login') }}">
+                                            <i class="fas fa-user"></i>
+                                        </a>
+                                    </button>
+                                </div>
+                            {% endif %}
                         </li>
                     </ul>
 

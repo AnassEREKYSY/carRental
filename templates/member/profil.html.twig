@@ -1,9 +1,26 @@
 {% extends 'base.html.twig' %}
 {% form_theme formProfil 'bootstrap_4_layout.html.twig' %}
 {% block body%}
-    <div class="m-3 p-2">
-            <h1>Profile</h1>
-            <hr>
+    <style>
+        .divCentral{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        button{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        .profilInput{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        a{
+            color:white;
+        }
+    </style>
+    <div class="m-4 p-5 divCentral">
+            <h1 style=" text-align: center;">Profile</h1>
+            <hr style="width: 550px; margin: 30px auto;">
             {{ form_start(formProfil) }}
                 {{ form_row(formProfil.pseudo , {'attr':{'placeholder':"Pseudo du membre"}}) }}
                 {{ form_row(formProfil.nom , {'attr':{'placeholder':"Nom du membre"}}) }}

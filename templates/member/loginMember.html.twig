@@ -1,16 +1,52 @@
 {% extends 'base.html.twig' %}
 {% block body%}
-    <div class="m-3 p-2">
-            <h1>Connexion</h1>
-            <hr>
+    <style>
+        body{
+            background: url('/images/pexels-oziel-gómez-849835.jpg') no-repeat;
+            background-size:cover;
+            background-position:center;
+            height:715px;
+        width: 100%; 
+        }
+        .divCentral{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+            width:450px;
+            height:450px;
+            position: absolute;
+            top:40px;
+            right:30px;
+        }
+        .button{
+            position: relative;
+            
+            right:-130px;
+            font-size:20px;
+            width:120px;
+            height:45px;
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        .loginInput{
+            border-radius:20px;
+            box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+        }
+        a{
+            color:white;
+        }
+    </style>
+    <div class="m-4 p-5 divCentral">
+            <h1 style=" text-align: center;">Connexion</h1>
+            <hr style="width: 180px; margin: 30px auto;">
             <form action="{{ path('app_member_login') }}" method="post">
-                <label for="username">Email:</label>
-                <input type="text" id="username" name="_username" value="{{ last_username }}">
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="_password">
+                <label for="username" class="form-label">Email:</label>
+                <input placeholder="Tapez votre email" type="text" id="username" name="_username" value="{{ last_username }}" class="form-control  loginInput">
+                <br>
+                <label for="password" class="form-label">Password:</label>
+                <input placeholder="Tapez votre password" type="password" id="password" name="_password" class="form-control loginInput">
                 <input type="hidden" name="_target_path" value="/home">
-                <button type="submit">login</button>
+                <br>
+                <button type="submit" class="btn btn-primary button">login</button>
             </form>
     </div>
 {% endblock %}

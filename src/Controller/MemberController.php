@@ -23,12 +23,18 @@ class MemberController extends AbstractController
     #[Route('/member', name: 'app_member')]
     public function index(MemberRepository $memberRepository,SessionInterface $session): Response
     {
+        $user=$this->getUser();
+        $statutUser=null;
         $form=$this->createForm(SearchMemberType::class);
         $result = $session->get('search_result');
         $session->remove('search_result');
         $members = $result ?? $memberRepository->findAll();
+        if($user && $user instanceof Member){
+            $statutUser=$memberRepository->findOneBy(['id'=>$user->getId()])->getStatut();
+            $userId=$user->getId();
+        }
         return $this->render('/member/index.html.twig', [
-            'members' => $members,'formSearch'=>$form
+            'members' => $members,'formSearch'=>$form,'statutUser'=>$statutUser,'idMember'=>$userId
         ]);
     }
 
