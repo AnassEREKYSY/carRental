@@ -23,10 +23,12 @@ class VehiculeController extends AbstractController
     public function index(VehiculeRepository $vehiculeRepository ,SessionInterface $session,
                         MemberRepository $memberRepository, $dateDebut=null,$dateFin=null): Response
     {
+        $dateDebut=$session->get('dateDepart');
+        $dateFin=$session->get('dateFin');
         $vehicules=null;
         $userId=null;
         $availableCars=null;
-        if($dateDebut!=null && $dateFin!=null){
+        if(($dateDebut!=null && $dateFin!=null)){
             $availableCars=$vehiculeRepository->searchAvailableCars($dateDebut,$dateFin);
         }
         $user=$this->getUser();

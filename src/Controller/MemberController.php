@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Form\AddEditMemberType;
 use App\Form\MemberLoginType;
 use App\Form\ProfilType;
+use App\Form\RegisterType;
 use App\Form\SearchMemberType;
 use App\Repository\CommandeRepository;
 use App\Repository\MemberRepository;
@@ -138,5 +139,24 @@ class MemberController extends AbstractController
             ]);
         }
         return $this->render('member/profil.html.twig',['formProfil'=>$form->createView(), 'message'=>$message,]);
+    }
+
+    #[Route('/member/register', name: 'app_register')]
+    public function register(Member $member=null,Request $request,EntityManagerInterface $manager
+    ): Response
+    {
+        $member=new Member();
+        $form=$this->createForm(RegisterType::class,$member);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $avecHachageMdp=password_hash($form->get('mdp')->getData(), PASSWORD_BCRYPT);
+            $member->setMdp($avecHachageMdp);
+            $member->setStatut(0);
+            $member->setDateEnregistrement(new \DateTime());
+            $manager->persist($member);
+            $manager->flush();
+            flash()->addSuccess("L'operation est passé avec succés");
+        }
+        return $this->render('member/register.html.twig',['formRegister'=>$form->createView()]);
     }
 }

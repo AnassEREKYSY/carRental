@@ -82,8 +82,16 @@ class CommandeController extends AbstractController
             $commande->setPrixTotal($prix);
             $manager->persist($commande);
             $manager->flush();       
-            flash()->addSuccess("L'operation est passé avec succés");
-            return $this->redirectToRoute('app_commande');
+            $commande=1;
+            // if($id!=0 && $memberId!=0){
+            //     flash()->addSuccess("L'operation est passé avec succés");
+            //     return $this->forward('App\\Controller\\VehiculeController::index');
+                
+            //     //return $this->redirectToRoute('app_vehicule');
+            // }else{
+                flash()->addSuccess("L'operation est passé avec succés");
+                return $this->redirectToRoute('app_commande');
+            //}
         }
         return $this->render('commande/addCommande.html.twig',['formAddEditCommande'=>$form->createView() ,'etatButton'=>$etat]);
     }
