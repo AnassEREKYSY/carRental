@@ -43,7 +43,8 @@ class VehiculeRepository extends ServiceEntityRepository
                     $qb->expr()->not($qb->expr()->between('c.date_depart', ':dateDebut', ':dateFin')),
                     $qb->expr()->not($qb->expr()->between('c.date_fin', ':dateDebut', ':dateFin')),
                     $qb->expr()->not($qb->expr()->like('c.date_fin', ':dateFin')),
-                    $qb->expr()->not($qb->expr()->like('c.date_depart', ':dateDebut'))
+                    $qb->expr()->not($qb->expr()->like('c.date_depart', ':dateDebut')),
+                    $qb->expr()->eq('v.available', ':available')
                 ),
                 $qb->expr()->eq('v.available', ':available')
             )

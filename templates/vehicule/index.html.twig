@@ -72,9 +72,45 @@
         height:40px;
         justify-content:center;
     }
+    .homeBtn{
+        border-radius:40px;
+        right:1430px;
+        top: 15px;
+        position:absolute;
+        width: 45px;
+        height:45px;
+        justify-content:center;
+        text-align:center;
+    }
+    .homeBtn a {
+        color:white;
+    }
+    .historyBtn{
+        border-radius:40px;
+        right:1430px;
+        top: 75px;
+        position:absolute;
+        width: 45px;
+        height:45px;
+        justify-content:center;
+        text-align:center;
+    }
+    .historyBtn a {
+        color:white;
+    }
 </style>
 
 <div class="example-wrapper">
+    <button class="btn btn-primary mt-3 homeBtn">
+        <a class="" href="{{ path('app_home') }}">
+            <i class="fas fa-home"></i>
+        </a>
+    </button>
+    <button class="btn btn-primary mt-3 historyBtn">
+        <a class="" href="{{ path('app_commande_history') }}">
+           <i class="fas fa-history"></i>
+        </a>
+    </button>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow  m-5 bg-body rounded  text-center">
         <div class="container-fluid">
             <a class="navbar-brand fw-bolder mx-5 pageTitle" href="{{ path('app_vehicule') }}">Vehicule</a>
@@ -159,7 +195,7 @@
                             {% if statutUser ==0%}
                                 <td scope="col">
                                     <button type="button" class="btn btn-success btn-sm">
-                                        <a href="{{ path('app_commande_add',{'id':vehicule.id,'idMember':idMember})}}">
+                                        <a href="{{ path('app_commande_add',{'id':vehicule.id,'idMember':idMember,})}}">
                                             réserver
                                         </a>
                                     </button>

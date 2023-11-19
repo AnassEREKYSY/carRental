@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .example-wrapper { 
+        margin: 1em auto; 
+        max-width: 1300px;
+         width: 100%; 
+         font: 18px/1.5 sans-serif; 
+    }
+            a{
+        text-decoration:none;
+        color : white;
+    }
+    table{
+        text-align:center;
+    }
+    button{
+        border-radius:20px;
+        box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    }
+    tr,td{
+        cursor: pointer;
+    }
+    .loginout{
+        width:200px;
+        right:10px;
+        top: 5px;
+        position:absolute;
+    }
+    .loginout button {
+        margin:20px;
+    }
+    .login button {
+        margin:20px;
+    }
+    .login{
+        width:200px;
+        right:10px;
+        top: 5px;
+        position:absolute;
+    }
+    nav{
+        height:80px;
+    }
+    .pageTitle{
+        font-size:30px;
+        right:980px;
+        top: 10px;
+        position:absolute;
+    }
+    .message{
+        right:600px;
+        top: 200px;
+        position:absolute;
+    }
+    .homeBtn{
+        border-radius:40px;
+        right:1430px;
+        top: 55px;
+        position:absolute;
+        width: 45px;
+        height:45px;
+        justify-content:center;
+        text-align:center;
+    }
+    .homeBtn a {
+        color:white;
+    }
+</style>
+
+<div class="example-wrapper">
+    <button class="btn btn-primary mt-3 homeBtn">
+        <a class="" href="{{ path('app_home') }}">
+            <i class="fas fa-home"></i>
+        </a>
+    </button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow p-2 m-5 bg-body rounded  text-center">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bolder mx-5 pageTitle" href="{{ path('app_commande_history') }}">Historique</a>
+            <div class="collapse navbar-collapse mx-5" id="navbarColor03">
+                    <ul class="navbar-nav me-auto ">
+                        <li>
+                            {% if idMember %}
+                                <div class="loginout">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <a  href="{{ path('app_profil', {'id':idMember}) }}">
+                                            <i class="fas fa-user"></i>
+                                        </a>
+                                    </button>
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <a  href="{{ path('app_member_logout') }}">
+                                            <i class="fas fa-sign-out"></i>
+                                        </a>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="login">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <a  href="{{ path('app_member_login') }}">
+                                            <i class="fas fa-user"></i>
+                                        </a>
+                                    </button>
+                                </div>
+                            {% endif %}
+
+                        </li>
+                    </ul>
+            </div>
+        </div>
+    </nav>
+    {% if commandes%}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Vehicule</th>
+                    <th scope="col">Date depart</th>
+                    <th scope="col">Date retour</th>
+                    <th scope="col">Date d'enregistrement</th>
+                    <th scope="col">Prix total</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for commande in commandes %}
+                            <tr>
+                                <td scope="col">{{commande.getIdVehicule.marque}} <br>{{commande.getIdVehicule.modele}}</td>
+                                <td scope="col">{{commande.getDateDepart | date('d/m/y') }}</td>
+                                <td scope="col">{{commande.getDateFin | date('d/m/y') }}</td>
+                                <td scope="col">{{commande.getDateEnregistrement | date('d/m/y') }}</td>
+                                <td scope="col">{{commande.getPrixTotal }} $</td>
+                                <td scope="col">
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <a href="{{ path('app_commande_delete',{'id':commande.id})}}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </button>
+                                </td>
+                            </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <span class="message">Vous n'avez encore effectuer une commande !!</span>
+    {% endif %}
+</div>
+{% endblock %}

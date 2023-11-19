@@ -81,7 +81,7 @@ class CommandeController extends AbstractController
             $prix=$days*$commande->getIdVehicule()->getPrixJournalier();
             $commande->setPrixTotal($prix);
             $manager->persist($commande);
-            $manager->flush();
+            $manager->flush();       
             flash()->addSuccess("L'operation est passé avec succés");
             return $this->redirectToRoute('app_commande');
         }
@@ -126,5 +126,19 @@ class CommandeController extends AbstractController
         $commande->getIdVehicule()->setAvailable("oui");
         $commandeRepository->remove($commande);
         return $this->redirectToRoute('app_commande',['op'=>1]);
+    }
+
+    #[Route('/commande/history', name: 'app_commande_history')]
+    public function history(CommandeRepository $commandeRepository): Response
+    {
+        $user=$this->getUser();
+        $userCommande=null;
+        $id=null;
+        if($user instanceof Member){
+            $userCommande=$user;
+            $id=$userCommande->getId();
+        }
+        $commandes=$commandeRepository->findBy(['id_member'=>$userCommande]);
+        return $this->render('/commande/history.html.twig', ['commandes' => $commandes,'idMember' => $id]);
     }
 }
