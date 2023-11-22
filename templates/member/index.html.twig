@@ -103,19 +103,43 @@
     .historyBtn a {
         color:white;
     }
+    .message{
+        right:570px;
+        top: 275px;
+        position:absolute;
+        font-size:20px
+    }
+    .homeBtn1{
+        border-radius:40px;
+        right:1430px;
+        top: 55px;
+        position:absolute;
+        width: 45px;
+        height:45px;
+        justify-content:center;
+        text-align:center;
+    }
 </style>
 
 <div class="example-wrapper">
+    {% if statutUser == 1 %}
+    <button class="btn btn-primary mt-3 homeBtn1">
+        <a class="" href="{{ path('app_home') }}">
+            <i class="fas fa-home"></i>
+        </a>
+    </button>
+    {% else %}
     <button class="btn btn-primary mt-3 homeBtn">
         <a class="" href="{{ path('app_home') }}">
             <i class="fas fa-home"></i>
         </a>
     </button>
     <button class="btn btn-primary mt-3 historyBtn">
-        <a class="" href="">
+        <a class="" href="{{ path('app_commande_history') }}">
            <i class="fas fa-history"></i>
         </a>
     </button>
+    {% endif %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow p-2 m-5 bg-body rounded  text-center">
         <div class="container-fluid">
             <a class="navbar-brand fw-bolder mx-5 pageTitle" href="{{ path('app_member') }}">Member</a>
@@ -207,7 +231,9 @@
                             </td>
                         </tr>
                    {% endfor %}
-                {% endif %}
+            {% else %}
+                <span class="message">Il n y'a pas de membre dans la Base des Données pour le moment!!</span>
+            {% endif %}
         </tbody>
     </table>
 </div>

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Form\AddEditMemberType;
-use App\Form\MemberLoginType;
 use App\Form\ProfilType;
 use App\Form\RegisterType;
 use App\Form\SearchMemberType;
@@ -47,7 +46,6 @@ class MemberController extends AbstractController
         $operationType=0;
         $etat=1;
         $form=null;
-        $message="Erruer!! Veuillez corriger les erreurs";
         if(!$member){
             $member=new Member();
             $etat=0;
@@ -108,10 +106,7 @@ class MemberController extends AbstractController
     #[Route('/member/login', name: 'app_member_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
         return $this->render('member/loginMember.html.twig', [
             'last_username' => $lastUsername,
@@ -123,7 +118,7 @@ class MemberController extends AbstractController
     #[Route('/member/logout', name: 'app_member_logout')]
     public function logout(): Response
     {
-        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+        throw new \Exception('');
         flash()->addInfo("Logout fait avec succés");
     }
 

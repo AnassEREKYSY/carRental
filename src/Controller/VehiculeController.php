@@ -23,16 +23,23 @@ class VehiculeController extends AbstractController
     public function index(VehiculeRepository $vehiculeRepository ,SessionInterface $session,
                         MemberRepository $memberRepository, $dateDebut=null,$dateFin=null): Response
     {
+        $user=$this->getUser();
+        $statutUser=null;
+        $userId=null;
+        if($user && $user instanceof Member){
+            $statutUser=$memberRepository->findOneBy(['id'=>$user->getId()])->getStatut();
+            $userId=$user->getId();
+        }
         $dateDebut=$session->get('dateDepart');
         $dateFin=$session->get('dateFin');
         $vehicules=null;
-        $userId=null;
         $availableCars=null;
-        if(($dateDebut!=null && $dateFin!=null)){
-            $availableCars=$vehiculeRepository->searchAvailableCars($dateDebut,$dateFin);
+        if(($dateDebut!=null && $dateFin!=null && $statutUser!=1)){
+            $availableCars=$vehiculeRepository->searchAvailableCarsForCustomer($dateDebut,$dateFin);
+        }else{
+            $availableCars=$vehiculeRepository->searchAvailableCarsForAdmin($dateDebut,$dateFin);
         }
-        $user=$this->getUser();
-        $statutUser=null;
+
         $form=$this->createForm(SearchVehiculeType::class);
         $result = $session->get('search_result');
         $session->remove('search_result');
@@ -40,12 +47,10 @@ class VehiculeController extends AbstractController
         $session->set('dateFin',$dateFin);
         if($availableCars !=null){
             $vehicules = $availableCars;
+        }else if($availableCars ==null){
+            $vehicules =null;
         }else{
             $vehicules = $result ?? $vehiculeRepository->findAll();
-        }
-        if($user && $user instanceof Member){
-            $statutUser=$memberRepository->findOneBy(['id'=>$user->getId()])->getStatut();
-            $userId=$user->getId();
         }
         return $this->render('/vehicule/index.html.twig', [
             'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser,'idMember'=>$userId
@@ -80,7 +85,6 @@ class VehiculeController extends AbstractController
                             $newFilename
                         );
                     } catch (FileException $e) {
-                        // ... handle exception if something happens during file upload
                     }
                     $vehicule->setPhoto($newFilename);
                 }

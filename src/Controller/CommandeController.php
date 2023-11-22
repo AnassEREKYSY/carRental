@@ -15,7 +15,6 @@ use App\Repository\VehiculeRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\String\UnicodeString;
 
 class CommandeController extends AbstractController
 {
@@ -83,15 +82,13 @@ class CommandeController extends AbstractController
             $manager->persist($commande);
             $manager->flush();       
             $commande=1;
-            // if($id!=0 && $memberId!=0){
-            //     flash()->addSuccess("L'operation est passé avec succés");
-            //     return $this->forward('App\\Controller\\VehiculeController::index');
-                
-            //     //return $this->redirectToRoute('app_vehicule');
-            // }else{
+            if($id!=0 && $memberId!=0){
+                flash()->addSuccess("L'operation est passé avec succés");
+                return $this->forward('App\\Controller\\VehiculeController::index');
+            }else{
                 flash()->addSuccess("L'operation est passé avec succés");
                 return $this->redirectToRoute('app_commande');
-            //}
+            }
         }
         return $this->render('commande/addCommande.html.twig',['formAddEditCommande'=>$form->createView() ,'etatButton'=>$etat]);
     }

@@ -89,6 +89,12 @@
     .homeBtn a {
         color:white;
     }
+    .message{
+        right:570px;
+        top: 275px;
+        position:absolute;
+        font-size:20px
+    }
 </style>
 
 <div class="example-wrapper">
@@ -168,7 +174,10 @@
                             </td>
                         </tr>
                    {% endfor %}
-                {% endif %}
+            {% else %}
+                <span class="message">Il n y'a pas de commande dans la Base des Données pour le moment !!</span>
+  
+            {% endif %}
         </tbody>
     </table>
 </div>

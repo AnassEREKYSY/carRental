@@ -40,7 +40,7 @@
                 {{ form_row(formAddEditVehicule.prix_journalier , {'attr':{'placeholder':"Prix de la vehicule"}}) }}
                 {% if etatButton==0%}
                     <button type="submit" class="btn btn-success mt-3">Ajouter la vehicule</button>
-                {% else %}
+                {% elseif %}
                     <button type="submit" class="btn btn-primary mt-3">Modifier la vehicule</button>
                 {% endif %}
             {{ form_end(formAddEditVehicule) }}

@@ -82,6 +82,17 @@
         justify-content:center;
         text-align:center;
     }
+
+    .homeBtn1{
+        border-radius:40px;
+        right:1430px;
+        top: 55px;
+        position:absolute;
+        width: 45px;
+        height:45px;
+        justify-content:center;
+        text-align:center;
+    }
     .homeBtn a {
         color:white;
     }
@@ -98,9 +109,23 @@
     .historyBtn a {
         color:white;
     }
+    .message{
+        right:570px;
+        top: 275px;
+        position:absolute;
+        font-size:20px
+    }
 </style>
 
 <div class="example-wrapper">
+
+    {% if statutUser == 1 %}
+    <button class="btn btn-primary mt-3 homeBtn1">
+        <a class="" href="{{ path('app_home') }}">
+            <i class="fas fa-home"></i>
+        </a>
+    </button>
+    {% else %}
     <button class="btn btn-primary mt-3 homeBtn">
         <a class="" href="{{ path('app_home') }}">
             <i class="fas fa-home"></i>
@@ -111,6 +136,7 @@
            <i class="fas fa-history"></i>
         </a>
     </button>
+    {% endif %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow  m-5 bg-body rounded  text-center">
         <div class="container-fluid">
             <a class="navbar-brand fw-bolder mx-5 pageTitle" href="{{ path('app_vehicule') }}">Vehicule</a>
@@ -192,32 +218,31 @@
                             <td scope="col">{{vehicule.getPrixJournalier}} $</td>
                             <td scope="col">{{vehicule.getDateEnregistrement | date('d/m/y') }}</td>
                             <td scope="col">{{vehicule.available }}</td>
-                            {% if statutUser ==0%}
-                                <td scope="col">
+                            <td scope="col">
+                                {% if statutUser ==0%}
                                     <button type="button" class="btn btn-success btn-sm">
                                         <a href="{{ path('app_commande_add',{'id':vehicule.id,'idMember':idMember,})}}">
                                             réserver
                                         </a>
                                     </button>
-                                </td>
-                            {% else %}
-                            <td scope="col">
-                                <button type="button" class="btn btn-primary btn-sm">
-                                    <a href="{{ path('app_vehicule_edit',{'id':vehicule.id})}}">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm">
-                                    <a href="{{ path('app_vehicule_delete',{'id':vehicule.id})}}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary btn-sm">
+                                        <a href="{{ path('app_vehicule_edit',{'id':vehicule.id})}}">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <a href="{{ path('app_vehicule_delete',{'id':vehicule.id})}}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </button>
+                                {% endif %}
                             </td>
-                            {% endif %}
-
                         </tr>
                    {% endfor %}
-                {% endif %}
+            {% else %}
+                <span class="message">Il n y'a pas de voiture Disponible pour les dates choisies !!</span>
+            {% endif %}
         </tbody>
     </table>
 </div>
