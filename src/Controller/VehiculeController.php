@@ -36,7 +36,7 @@ class VehiculeController extends AbstractController
         $availableCars=null;
         if(($dateDebut!=null && $dateFin!=null && $statutUser!=1)){
             $availableCars=$vehiculeRepository->searchAvailableCarsForCustomer($dateDebut,$dateFin);
-        }else{
+        }else if($dateDebut!=null && $dateFin!=null && $statutUser==1){
             $availableCars=$vehiculeRepository->searchAvailableCarsForAdmin($dateDebut,$dateFin);
         }
 
@@ -47,10 +47,10 @@ class VehiculeController extends AbstractController
         $session->set('dateFin',$dateFin);
         if($availableCars !=null){
             $vehicules = $availableCars;
-        }else if($availableCars ==null){
-            $vehicules =null;
+        }else if($result !=null){
+            $vehicules =$result;
         }else{
-            $vehicules = $result ?? $vehiculeRepository->findAll();
+            $vehicules = $vehiculeRepository->findAll();
         }
         return $this->render('/vehicule/index.html.twig', [
             'vehicules' => $vehicules,'formSearch'=>$form,"statutUser"=>$statutUser,'idMember'=>$userId
@@ -110,6 +110,7 @@ class VehiculeController extends AbstractController
                     ->orWhere($qb->expr()->like('LOWER(v.marque)', ':searchTerm1'))
                     ->orWhere($qb->expr()->like('LOWER(v.modele)', ':searchTerm1'))
                     ->setParameter('searchTerm1', '%' . strtolower($form->get('champs')->getData()) . '%');
+                    // dd($qb->getQuery()->getResult());
             $result = $qb->getQuery()->getResult();
             $session->set('search_result', $result);
         }

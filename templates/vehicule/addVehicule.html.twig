@@ -21,7 +21,7 @@
     </style>
     <div class="m-4 p-5 divCentral">
             <button class="btn btn-primary ">
-                <a class="" href="{{ path('app_member') }}">
+                <a class="" href="{{ path('app_vehicule') }}">
                     <i class="fas fa-home"></i>
                 </a>
             </button>
@@ -40,7 +40,7 @@
                 {{ form_row(formAddEditVehicule.prix_journalier , {'attr':{'placeholder':"Prix de la vehicule"}}) }}
                 {% if etatButton==0%}
                     <button type="submit" class="btn btn-success mt-3">Ajouter la vehicule</button>
-                {% elseif %}
+                {% else %}
                     <button type="submit" class="btn btn-primary mt-3">Modifier la vehicule</button>
                 {% endif %}
             {{ form_end(formAddEditVehicule) }}
